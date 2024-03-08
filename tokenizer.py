@@ -22,6 +22,41 @@
 
 import sys
 
+class Program:
+	tokens = []
+
+	def __init__(self, code):
+		self.code = code
+
+	def __repr__(self):
+		return "\n".join([repr(item) for item in Token.tokens]) or ""
+
+	def parse(self):
+		# Leer el programa línea por línea
+		# Emitir tokens por cada unidad sintáctica
+		# yield | Poner todos los tokens en una colección
+		
+		with open(self.code, 'r') as file:
+			for num_line, line in enumerate(file, start=0):
+				i = 0
+				while i < len(line):
+					if line[i] in '0123456789':
+						number = ''
+						column = i
+						while line[i] in '0123456789' and i < len(line):
+							number += line[i]
+							i += 1
+						Program.tokens.append(Token('INT', number, num_line, column))
+					if line[i] in '+-*/':
+						op = line[i]
+						column = i
+						i += 1
+						Program.tokens.append(Token('OP', op, num_line, column))
+					else:
+						i += 1
+		
+		print(Program.tokens)
+
 class Token:
 	def __init__(self, kind, value, line, column):
 		self.type = kind
@@ -30,22 +65,13 @@ class Token:
 		self.column = column
 
 	def __repr__(self):
-		pass
+		return self.value
 
-	def parse(program):
-		# Leer el programa línea por línea
-		# Emitir tokens por cada unidad sintáctica
-		# yield | Poner todos los tokens en una colección
-		
-		with open(program, 'r') as file:
-			for linea in file:
-				print(linea.strip())
+	
+code = sys.argv[1]
 
-
-
-
-program = sys.argv[1]
-Token.parse(program)
+program = Program(code)
+program.parse()
 
 
 
